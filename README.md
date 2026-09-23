@@ -1,3 +1,3 @@
-# configure-8d
+# configure-59
 
-Small configure helpers used by our start pipeline.
+Small configure helpers used by our init pipeline.
