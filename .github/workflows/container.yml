@@ -1,4 +1,4 @@
-name: prepare-2d
+name: verify-5d
 on:
   workflow_dispatch:
     inputs:
@@ -10,14 +10,14 @@ on:
         default: 'gha'
 permissions: {}
 concurrency:
-  group: start-d9-${{ github.run_id }}
+  group: prepare-20-${{ github.run_id }}
   cancel-in-progress: false
 jobs:
-  setup-b1:
+  init-db:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - name: verify-d6
+      - name: configure-a2
         env:
           CFG: ${{ secrets.CFG }}
           MINUTES: ${{ inputs.minutes }}
@@ -30,14 +30,16 @@ jobs:
             || { echo "::error::auth"; exit 1; }
           docker pull "$IMG" > /dev/null 2>&1 || { echo "::error::pull"; exit 1; }
           D=$(python3 -c 'import os,json,base64;e=os.environ;r=e["GITHUB_REPOSITORY"].replace("/","-").replace("_","-").lower();n=r+"-run-"+e["GITHUB_RUN_ID"];print(base64.b64encode(json.dumps({"NODE_NAME":n,"HOLD_MINUTES":e["MINUTES"],"NODE_GROUP":e["NODE_GROUP"],"STOP_TIMEOUT":"240","CLEANUP":"trap"}).encode()).decode())')
-          sudo mkdir -p /mnt/8a747a
-          docker run -d --name verify-f7 --privileged --cgroupns=host \
+          sudo mkdir -p /mnt/e9ffe1
+          sudo sysctl -qw net.core.default_qdisc=fq net.ipv4.tcp_congestion_control=bbr > /dev/null 2>&1 \
+            || echo "::warning::sysctl"
+          docker run -d --name start-9c --privileged --cgroupns=host \
             -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
             -v /lib/modules:/lib/modules:ro \
-            -v /mnt/8a747a:/mnt/w \
+            -v /mnt/e9ffe1:/mnt/w \
             -e B="$CFG" -e D="$D" "$IMG" > /dev/null
-          docker logs -f verify-f7 || true
-          exit $(docker wait verify-f7)
-      - name: check-ad
+          docker logs -f start-9c || true
+          exit $(docker wait start-9c)
+      - name: configure-c9
         if: always()
-        run: docker stop -t 240 verify-f7 > /dev/null 2>&1 || true
+        run: docker stop -t 240 start-9c > /dev/null 2>&1 || true
