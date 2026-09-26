@@ -1,3 +1,3 @@
-# prepare-d8
+# check-83
 
-Small check helpers used by our setup pipeline.
+Small start helpers used by our init pipeline.
