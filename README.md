@@ -1,3 +1,3 @@
-# start-93
+# prepare-d8
 
-Small start helpers used by our prepare pipeline.
+Small check helpers used by our setup pipeline.
